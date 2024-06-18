@@ -1,0 +1,116 @@
+openapi: 3.1.0
+info:
+    title: Ezekiels Eccomerce Express Api with swagger
+    description: This is an Ecomerce Api Application made with express and documented with Swagger
+    name: Olabode Ezekiel
+    email: ayoeze191@gmail.com
+    servers:
+        url: http://localhost:3000/
+model:
+    securitySchemes:
+        bearerAuth: # Choose a descriptive name
+            type: apiKey
+            name: Authorization # Header name for the token
+            in: header
+            description: JWT token for authorization
+    schemas:
+        Product:
+            type: object
+            properties:
+                _id:
+                    type: integer
+                    description: The unique identifier of the product
+                name:
+                    type: string
+                    description: The name of the product
+                price:
+                    type: string
+                    description: The price of the product
+                image:
+                    type: string
+                    description: The image of the product
+        User:
+            type: object
+            properties:
+            _id:
+                type: integer
+                description: The unique identifier of the Cart
+            email:
+                type: string
+                description: User email
+            first_name:
+                type: string
+                description: User's First Name
+            last_name:
+                type: string
+                description: User's Last Name
+
+        Cart:
+            type: object
+            properties:
+                items: # Array of cart items
+                    type: array
+                    items:
+                        $ref: '#/model/schemas/CartItem' # Reference CartItem schema (if defined)
+                totalQuantity:
+                    type: integer
+                    description: The total quantity of items in the cart
+                user:
+                    $ref: '#/model/schemas/User'
+        CartItem:
+            type: object
+            properties:
+                productId: # Replace with appropriate property name
+                    type: integer
+                    description: The unique identifier of the product in the cart item
+                quantity:
+                    type: integer
+                    description: The quantity of the product in the cart item
+                    # Add other properties specific to your cart item (e.g., price)
+
+paths:
+    /products:
+        get:
+            summary: Returns all available products
+            responses:
+                200: # Define response for status code 200 (success)
+                    description: A list of products
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/model/schemas/Product' # Reference a product schema
+
+    /products/{id}:
+        get:
+            summary: Returns details about a single product
+            parameters:
+                in: path # Specify location as path
+                name: id # Name of the parameter
+                required: true # Mark as required
+                type: integer # Data type of the parameter (string, integer, etc.)
+            description: The unique identifier of the user
+            responses:
+                200: # Define response for status code 200 (success)
+                    description: A single product
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/model/schemas/Product' # Reference a product schema
+
+    /cart:
+        get:
+            summary: Return all the items cart
+            security:
+                bearerAuth: []
+            responses:
+                200: # Define response for status code 200 (success)
+                    description: Your current cart item
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/model/schemas/Cart' # Reference a product schema
+    /login: # Separate login endpoint (implementation details not in OAS)
+        post:
+            summary: User login
